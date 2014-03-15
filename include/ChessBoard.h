@@ -13,8 +13,8 @@ typedef struct {
 
 typedef struct{
 	int aux;
-	char type;//king,roock...etc.
-	int color;//1 alb, 2 negru
+	char type;//king,pawn,etc.
+	int color;//2 alb, 1 negru
 } Elemente;
 
 class ChessBoard
@@ -22,11 +22,10 @@ class ChessBoard
 public:
 	ChessBoard();
 	virtual ~ChessBoard();
-
-
+	//variabile
 	Elemente b[120];
 	int noGame;
-
+	//functiile tablei de sah
 	int newBoard();
 	int resetBoard();
 	int generateBoardMatrix();

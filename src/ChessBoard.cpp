@@ -74,9 +74,10 @@ int ChessBoard::mutareRandom(int player_color){
 		n = rand() % 8 + 1;
 		a[1] = '1' - 1 + n;
 		a[2] = a[0];
-		if(player_color == 1){
-            a[3] = a[1] - 1;
-		}else a[3]=a[1] + 1;
+		if (player_color == 1){
+			a[3] = a[1] - 1;
+		}
+		else a[3] = a[1] + 1;
 		a[5] = '\0';
 		po x = transformare(a);
 
@@ -104,17 +105,18 @@ int ChessBoard::mutareRandom(int player_color){
 	return 0;
 }
 int ChessBoard::flipBoard(){
-    for (int i=20;i < 90;i++){
-        if (b[i].color==2){
-            b[i].color=1;
-        }else
-            if(b[i].color==1){
-                b[i].color=2;
-            }
+	for (int i = 20; i < 90; i++){
+		if (b[i].color == 2){
+			b[i].color = 1;
+		}
+		else
+		if (b[i].color == 1){
+			b[i].color = 2;
+		}
 
 
-    }
-return 0;
+	}
+	return 0;
 }
 int ChessBoard::resetBoard(){
 	for (int i = 0; i < 120; i++){
