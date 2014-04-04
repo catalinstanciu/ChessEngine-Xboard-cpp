@@ -3,20 +3,19 @@
 using namespace std;
 ChessBoard::ChessBoard()
 {
-	//ctor
-	// noGame=1;
+    kingPosition = 95;
+
 }
 
 ChessBoard::~ChessBoard()
 {
-	//dtor
 }
 int ChessBoard::newBoard(){
 	noGame++;
 	resetBoard();
 	return 0;
 }
-po ChessBoard::transformare(char * aux){
+pieceLocation ChessBoard::transformare(char * aux){
 	char a = aux[0];
 	char b = aux[1];
 	char c = aux[2];
@@ -46,84 +45,89 @@ po ChessBoard::transformare(char * aux){
 	}
 	v2 = d - '0' + 1;
 	r2 = v2 * 10 + v1;
-	po a1;
+	pieceLocation a1;
 	a1.start = r1;
 	a1.fin = r2;
 	return a1;
 }
-int ChessBoard::updateBoard(po x){
-	if (b[x.fin].type != 'a' && b[x.fin].color != b[x.start].color){
-		b[x.fin] = b[x.start];
-		b[x.start].type = '0';
-	}
-	else {
-		// cout<<"Mutare nepermisa!!!"<<endl;
-		return 1;
-	}
+int ChessBoard::updateBoard(pieceLocation x){
+	//if (b[x.fin].type == '0'){
+        Elemente aux;
+        if (b[x.fin].type!='0' /*&& b[x.start].type!='0'*/){
+            b[x.fin] = b[x.start];
+            b[x.start].type='0';
+            b[x.start].color= 0 ;
+        }
+        else {
+            aux = b[x.fin];
+            b[x.fin] = b[x.start];
+            b[x.start]=aux;
+        }
+	//}
+	//else {
+		//Mutare nepermisa!
+	//	return 1;
+	//}
 	return 0;
+}
+char* ChessBoard::locationToString(pieceLocation x){
+    char a[5];
+    a[0] = 'a' - 1 + x.start%10;
+    a[1] = '1' - 2 + x.start/10;
+    a[2] = 'a' - 1 + x.fin%10;
+    a[3] = '1' - 2 + x.fin/10;
+    a[4] = '\0';
+    return a;
+
 }
 int ChessBoard::mutareRandom(int player_color){
 	int ok = 0;
 	char a[5];
 	srand(time(0));
 	while (ok == 0){
-		//srand(time(0));
 		int n = rand() % 8 + 1;
 		a[0] = 'a' - 1 + n;
-		//srand(time(0));
 		n = rand() % 8 + 1;
 		a[1] = '1' - 1 + n;
 		a[2] = a[0];
-		if (player_color == 1){
-			a[3] = a[1] - 1;
+		if(player_color == 1){
+            a[3] = a[1] - 1;
 		}
-		else a[3] = a[1] + 1;
+            else a[3]=a[1] + 1;
 		a[5] = '\0';
-		po x = transformare(a);
+		pieceLocation x = transformare(a);
 
-		//  cout<<<<endl;
 		if (b[x.start].type == 'p' && b[x.start].color == player_color){
-			// cout<<"aaa";
 			if (b[x.fin].type == '0'){
 				if (updateBoard(x) == 0){
 					char str[10] = "move ";
 					strcat(str, a);
 					cout << str << endl;
 					ok = 1;
-
 				}
 			}
 			else{
 				return 3;
 			}
-
-
 		}
-
-
 	}
 	return 0;
 }
 int ChessBoard::flipBoard(){
-	for (int i = 20; i < 90; i++){
-		if (b[i].color == 2){
-			b[i].color = 1;
-		}
-		else
-		if (b[i].color == 1){
-			b[i].color = 2;
-		}
-
-
-	}
-	return 0;
+    for (int i = 21; i < 59; i++){
+        Elemente aux;
+        aux = b[i];
+        b[i] = b[99 - i + 20];
+        b[99 - i + 20] = aux;
+    }
+return 0;
 }
 int ChessBoard::resetBoard(){
+    kingPosition = 95;
 	for (int i = 0; i < 120; i++){
-
 		if (i == 31){
 			b[i].type = 'p';
-			b[i].color = 2;
+			b[i].color = 2;// 2 e om
 			i++;
 			b[i].type = 'p';
 			b[i].color = 2;
@@ -173,7 +177,7 @@ int ChessBoard::resetBoard(){
 			b[i].color = 1;
 			i++;
 		}
-		if (i == 21){//coonsideram jucatoru alb sus si negru jos;
+		if (i == 21){
 			b[i].type = 'r';
 			b[i].color = 2;
 			i++;
@@ -224,7 +228,6 @@ int ChessBoard::resetBoard(){
 			b[i].type = 'r';
 			b[i].color = 1;
 			i++;
-
 		}
 		if (i<20)
 			b[i].type = 'a';
@@ -232,14 +235,10 @@ int ChessBoard::resetBoard(){
 			b[i].type = 'a';
 		if (i > 40 && i % 10 > 0 && i % 10 < 9 && i < 79)
 			b[i].type = '0';
-
 	}
 	return 0;
 };
-/*typedef struct {
-int start;int fin;
-} po;*/
-po transformare(char * aux){
+pieceLocation transformare(char * aux){
 	char a = aux[0];
 	char b = aux[1];
 	char c = aux[2];
@@ -269,7 +268,7 @@ po transformare(char * aux){
 	}
 	v2 = d - '0' + 1;
 	r2 = v2 * 10 + v1;
-	po a1;
+	pieceLocation a1;
 	a1.start = r1;
 	a1.fin = r2;
 	return a1;

@@ -5,32 +5,34 @@
 #include <fstream>
 #include <ctime>
 #include <cstdlib>
+
 using namespace std;
 
 typedef struct {
 	int start; int fin;
-} po;
+} pieceLocation;
 
 typedef struct{
 	int aux;
-	char type;//king,pawn,etc.
-	int color;//2 alb, 1 negru
+	char type;
+	int color;
 } Elemente;
 
 class ChessBoard
 {
 public:
+    int kingPosition;
 	ChessBoard();
 	virtual ~ChessBoard();
-	//variabile
+
 	Elemente b[120];
 	int noGame;
-	//functiile tablei de sah
+    char* locationToString(pieceLocation x);
 	int newBoard();
 	int resetBoard();
 	int generateBoardMatrix();
-	po transformare(char * aux);
-	int updateBoard(po x);
+	pieceLocation transformare(char * aux);
+	int updateBoard(pieceLocation x);
 	int mutareRandom(int player_color);
 	int flipBoard();
 
