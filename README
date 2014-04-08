@@ -1,0 +1,148 @@
+Team CodeWatchers
+ Player names:
+	Stanciu Catalin
+	Dobrin Tanase-Alexandru
+	Nedelcu Mihai-Ovidiu
+	Crac Mihai Ovidiu
+
+	Acest proiect a fost creeat,compilat si testat pe windows folosind winboard, limbajul C++ si compilatorul g++ , folosind ca IDE CodeBlocks 13.12.
+	Am atasat proiectul *.cbp dar si un Makefile cu regula de compilare folostita.
+		ETAPA 1:
+	Acest engine poate efectua mistarea pe tabla de sah a tuturor pionilor in mod aleator, cu culoarea pieselor la alegere, pana cand unul din pioni
+	nu mai poate efectua o mutare, raspunzand interfetei grafice winboard cu comanda `resign`.
+Fisierul main.cpp:
+	-am folosit variablile: -enginemode (aceasta variabila este 1 daca trebuie sa mute utilizatorul si 2 daca este la mutare programul;
+							-colorup (aceasta variabila este 1 daca tabla nu este intoarsa deci programul este cel care joaca cu piesele de sus, si 2 altfel); 
+							-am instantiat clasa ChessBoard pt a ma folosi de metodele acestea;
+	-in acest fisier am citi comenzile pe care le primeste programul de la winboard,
+	-am testat daca comanada primita corespunde cu una din comenzile: xboard,force,new,black,white,quit,resign,go sau este o comada data de utilizator;
+		-comnda: -force: salvez variabila enginmode(adica playerul care era la mutare), setez pe 0 astfel incat sa nu mai poata muta niciun player pana cand se primeste comanda go;
+				-comanda primita de la utilizator:- transfor stringul primit ca comanda in doi intregi acestia reprezinta pozitia unde se afla piesa si pozitia unde trebuie sa ajunga;
+													-actualizez tabla cu noua pozitie a piesei folosindu-ma de metoda upgradeBoard din clasa ChessBoard;
+													-enginemod=2 deci acum este randul programului sa mute:
+													-programul foloseste metoda mutareRandom aceasta metoda se aplica in functie de variabila colorup, deci in functie de pozitia table (intoarsa/normala);
+																			
+			    -xboard setez numele programului care va juca;
+				-new: resetez positiile pieselor pe tabla si tot odata si variabilele;
+				-white: setez variablia colorup pe 2 deci tabla este intoarsa si tot odata fac si o mutare;
+				-black: acelasi lucru fac si cand primesc aceasta comanda numai ca variabila colorup va fi setata pe 1;
+				-quit: se iese din program;
+				-resign: se afiseaza resign si jocul se incheie;
+				-go: enginemode priemste valoare dinainte de comanda force deci, playerul poate sa mute;
+				
+Fisierul ChessBoard.cpp ontine definitiile metodelor continute de clasa ChessBoard si un vector de Elemente
+	de 120 de pozitii.Am construit o structura Elemente ce contine membrii : type de
+	tip char care ne arata ce fel de piesa este o variabila de tip Elemente,
+	color de tip int care ne spune cui apartine o variabila de tip Elemente,
+	1 pentru jucatorul cu piese albe, 2 pentru jucatorul cu piese negre.
+	
+	Metoda int newBoard() : retine in variabila noGame cate jocuri s-au jucat si reaseaza
+	piesele pe tabla de sah in pozitia initiala.
+	
+	Metoda int resetBoard() : pune piesele pe tabla de sah in pozitia initiala.Am folosit
+	un vector de 120 de elemente astfel:
+		-am bordat tabla de sah cu caracterul 'a';
+		-in interiorul tablei de sah, pe primele doua linii de sus si 
+		primele 2 linii de jos am pus piesele cu caracterul respectiv fiecareia
+		dintre ele;
+		-in interiorul tablei de sah pe pozitiile ramase am pus caracterul '0';
+	
+	 Metoda pieceLocation transformare(char * aux) : primeste un string si transformam primele 2 
+		caractere in pozitia initiala a piesei pe care o retinem in variabila
+		r1 iar ultimele 2 caractere in pozitia in care vrem sa mutam piesa pe tabla de sah.
+		
+	 Metoda int updateBoard(pieceLocation x) : primeste o variabila de tip pieceLocation in care avem memorate
+		pozitia initiala a mutarii si pozitia unde vrem sa mutam piesa.Daca pozitia unde 
+		vrem sa mutam piesa are caracterul diferit de 'a'(se afla pe tabla) si nu se afla nicio alta piesa
+		a jucatorului care muta piesa atunci sa executa mutarea iar pozitia initiala a piesei
+		va primi caracterul '0'(pozitie libera pe tabla de sah).Altfel returnam 1 , mutare invalida.
+
+	 Metoda int mutareRandom(int player_color) : primeste o variabila ce indica culoarea pieselor
+		jucatorului pentru care se face mutarea random(muta random doar pion).Apoi ne asiguram ca
+		am generat o mutare valida si apoi o trimitem xboard-ului.
+	
+	 Metoda int flipBoard() : schimba comanda pieselor de la jucatorul negru la cel alb.		
+	 
+		ETAPA 2:
+		Modificari realizate pentru etapa 2 :
+	main.cpp :
+	-Pentru etapa a doua am extins functionalitatea sursei main.cpp adaugand doua functii noi moveToGetOutFromChess si move Random:
+		-prima functie (moveToGetOutFromChess) parcurge toate piesele de pe tabla si verifica daca piesa gasit apartine enginului. In caz afirmativ genereaza toate mutarile pe care aceasta piesa le poate face, mutari corespunzatoare tipului de piesa (pion,tura,regina,etc) . Se testeaza pentru fiecare mutare genereata daca aceasta "scoate" regele din sah(simuland mutarea pe tabla virtuala, vectorul b din clasa ChessBoard), in caz afirmativ se trimite catre winboard comanda corespunzatoare mutarii respective. Pentru a testa daca regele se afla in sah, am instantiat o clasa de tipul ChessPieces. Functia moveToGetOutFromChess este apelata atunci cand mutarea oponentului genereaza sah .
+		-a doua functie (move Random) este apelata ori de cate ori regele nu se afla in sah. Se genereaza o mutare random folosind functia random_move_gen din clasa ChessPiece si se testeaza daca aceasta mutare introduce regele in sah. In caz afirmativ se genereaza alta mutare random pana cand se gaseste o mutare valida care nu ar pune regele in sah. Mutarea generata se simuleaza de fiecare data pe tabla virtuala si daca e valida se trimite comanda catre winboard, in caz negativ se revine la starea initiala si se genereaza alta mutare.
+		-in functia main:
+			-am introdus un caz pentru promovarea pionului, dandu-i acestuia valoare ultimului caracter din comanda primita de la winboard.
+			-am introdus 4 cazuri pentru locadele posibile si tot odata am introdus si cazul enPasant;
+	ChessBoard.cpp :				
+		Fisierul ChessBoard.cpp ontine definitiile metodelor continute de clasa ChessBoard.h si un vector de Elemente de 120 de pozitii.Am construit o structura Elemente ce contine membrii: type de tip char care ne arata ce fel de piesa este o variabila de tip Elemente, color de tip int care ne spune cui apartine o variabila de tip Elemente, 1 pentru jucatorul cu piese albe, 2 pentru jucatorul cu piese negre si o variabila auxiliara, aux.
+		
+		Am construit de asemenea strucura pieceLocation care contine pozitia de start si cea de final.
+
+		kingPosition-> retine pozitia regelui;
+		noGame-> retine numarul de jocuri;
+		b[120]-> matricea tablei de joc;
+
+		Constructorul intializeaza pozitia regelui;
+		
+		Metoda char* locationToString(pieceLocation x) transforma locatia in string spre a putea fi trimisa  ca si comanda.
+		
+		Metoda int newBoard() : retine in variabila noGame cate jocuri s-au jucat si reaseaza piesele pe tabla de sah in pozitia initiala.
+		
+		Metoda int resetBoard() : pune piesele pe tabla de sah in pozitia initiala.Am folosit un vector de 120 de elemente astfel:
+		-am bordat tabla de sah cu caracterul 'a';
+		-in interiorul tablei de sah, pe primele doua linii de sus si primele 2 linii de jos am pus piesele cu caracterul respectiv fiecareia dintre ele;
+		-in interiorul tablei de sah pe pozitiile ramase am pus caracterul '0';
+		
+		 Metoda pieceLocation transformare(char * aux) : primeste un string si transformam primele 2 caractere in pozitia initiala a piesei pe care o retinem in variabila r1 iar ultimele 2 caractere in pozitia in care vrem sa mutam piesa pe tabla de sah.
+			
+		Metoda int updateBoard(pieceLocation x) : primeste o variabila de tip pieceLocation in care avem memorate pozitia initiala a mutarii si pozitia unde vrem sa mutam piesa.Daca pozitia unde vrem sa mutam piesa are caracterul diferit de '0' (este inamic) atunci sa executa mutarea iar pozitia initiala a piesei va primi caracterul '0' si culoarea 0 (pozitie libera pe tabla de sah) iar cea finala va primi caracterul de pe pozitia de start si culoarea acestuia.Altfel se va executa miscarea iar poitia initiala va deveni libera .
+		
+		 Metoda int flipBoard() : schimba coma negru la cel alb si pozitia regelui pe tabla.
+	
+	ChessPieces.cpp : 
+		Clasa ChessPieces contine metodele:
+		
+		Moves random_move_gen(Elemente b[],int color);
+		-primeste ca parametrii tabla de sah si culoarea jucatorului;
+		-avem o variabila x de tip Moves;
+		-intr-o bucla while generam un nr random cu valorile in interiorul tablei de sah si
+		daca pe pozitia generata se afla o piesa a jucatorului curent atunci aflam intr-un switch
+		ce fel de piesa este pe pozitia generata si ce mutari posibile are pornind din pozitia generata
+		random;daca avem cel putin o mutare valida a piesei respective din pozitia de start generata
+		atunci intoarcem toate mutarile posibile ale piesei prin variabila x;
+
+		Moves pawn_moves(int poz,Elemente b[],int color);
+		-primeste ca parametrii pozitia din care se efectueaza mutarea,tabla de sah si culoarea jucatorului
+		-avem o variabila x de tip Moves;
+		-verificam culoarea jucatorului ce doreste sa faca mutarea si in functie de aceasta calculam
+		posibilele mutari ale pionului verificand in fata daca este pozitie libera si o casuta in diagonala
+		stanaga si dreapta daca se afla piesa a adversarului si adugam in variabila x mutarile corecte.
+
+		Moves nite_moves(int poz,Elemente b[],int color);
+		-primeste ca parametrii pozitia din care se efectueaza mutarea,tabla de sah si culoarea jucatorului
+		-avem o variabila x de tip Moves;
+		-calculam ce 8 posibile mutari ale calului si apoi verificam daca pe pozitia finala a mutarii este 
+		loc liber sau se afla o piesa a adversarului si adaugam in varibila x mutarile corecte.
+
+		Moves rock_moves(int poz,Elemente b[],int color);
+		-plecam cu o varibila i = 1 si o incrementam cat timp avem pozitie libera (mutarile la stanga si dreapta)
+		si adaugam in variabila x mutarile gasite pentru deplasare la stanga sau la dreapta;
+		-pentru mutarile in sus sau in jos vom pleca cu varibila i = 10 si o incrementam cu 10 cat timp avem
+		pozitie libera in sus sau in jos si adugam in x mutarile corecte.
+		
+		Moves bishop_moves(int poz ,Elemente b[],int color);
+		-pentru mutarile pe o diagonala plecam cu o variabila i = 9 si o incrementam cu 9 cat timp avem pozitie libera
+		si adugam in x mutarile corecte gasite;
+		-pentru mutarile pe cealalta diagonala plecam cu variabila i = 11 si o incrementam cu 11 cat timp avem pozitie
+		libera si adaugam in x mutarile corecte gasite;
+
+		Moves king_moves(int poz,Elemente b[],int color);
+		-verificam cele pe cele 8 posibile mutari daca este pozitie libera sau daca se afla piesa a adversarului
+		si adaugam in x mutarile corecte gasite;
+
+		Moves queen_moves(int poz,Elemente b[],int color);
+		-pentru mutarile reginei combinam mutarile nebunului si alei turei;
+
+		Moves isChess(int poz_king,Elemente b[],int color);
+		-pentru a afla daca regele este in sah ne imaginam ca regele ar fi pe rand una din cele 6 piese si verificam
+		daca pe pozitiile unde ar muta regele transformat se afla exact piesa in care s-a transformat regele si daca este
+		piesa a adversarului.Daca se indeplinesc cele 2 conditii in variabila x retinem pozitiile din care primeste sah.

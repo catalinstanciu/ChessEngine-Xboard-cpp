@@ -1,0 +1,22 @@
+# depslib dependency file v1.0
+1396809835 source:c:\users\catalin\documents\workspace\codewatcherschessenginee2\chessboard.cpp
+	"ChessBoard.h"
+
+1396806922 c:\users\catalin\documents\workspace\codewatcherschessenginee2\chessboard.h
+	<iostream>
+	<fstream>
+	<string>
+	<cstring>
+	<fstream>
+	<ctime>
+	<cstdlib>
+
+1396808335 source:c:\users\catalin\documents\workspace\codewatcherschessenginee2\chesspieces.cpp
+	"ChessPieces.h"
+
+1396806977 c:\users\catalin\documents\workspace\codewatcherschessenginee2\chesspieces.h
+	"ChessBoard.h"
+
+1396812749 source:c:\users\catalin\documents\workspace\codewatcherschessenginee2\main.cpp
+	"ChessPieces.h"
+

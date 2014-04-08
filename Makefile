@@ -1,7 +1,7 @@
 
 CC = g++
 CFLAGS = -Wall
-SRC = ChessBoard.cpp main.cpp
+SRC = ChessPieces.cpp ChessBoard.cpp main.cpp
 EXE = ChessEngine
  
 all:

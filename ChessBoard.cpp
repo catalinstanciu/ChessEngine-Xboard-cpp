@@ -4,7 +4,6 @@ using namespace std;
 ChessBoard::ChessBoard()
 {
     kingPosition = 95;
-
 }
 
 ChessBoard::~ChessBoard()
@@ -51,74 +50,40 @@ pieceLocation ChessBoard::transformare(char * aux){
 	return a1;
 }
 int ChessBoard::updateBoard(pieceLocation x){
-	//if (b[x.fin].type == '0'){
-        Elemente aux;
-        if (b[x.fin].type!='0' /*&& b[x.start].type!='0'*/){
+	    Elemente aux;
+        if (b[x.fin].type != '0' && b[x.start].type != '0'){
             b[x.fin] = b[x.start];
-            b[x.start].type='0';
-            b[x.start].color= 0 ;
+            b[x.start].type = '0';
+            b[x.start].color = 0;
         }
         else {
             aux = b[x.fin];
             b[x.fin] = b[x.start];
-            b[x.start]=aux;
+            b[x.start] = aux;
         }
-	//}
-	//else {
-		//Mutare nepermisa!
-	//	return 1;
-	//}
 	return 0;
 }
 char* ChessBoard::locationToString(pieceLocation x){
     char a[5];
-    a[0] = 'a' - 1 + x.start%10;
-    a[1] = '1' - 2 + x.start/10;
-    a[2] = 'a' - 1 + x.fin%10;
-    a[3] = '1' - 2 + x.fin/10;
+    a[0] = 'a' - 1 + x.start % 10;
+    a[1] = '1' - 2 + x.start / 10;
+    a[2] = 'a' - 1 + x.fin % 10;
+    a[3] = '1' - 2 + x.fin / 10;
     a[4] = '\0';
     return a;
-
 }
-int ChessBoard::mutareRandom(int player_color){
-	int ok = 0;
-	char a[5];
-	srand(time(0));
-	while (ok == 0){
-		int n = rand() % 8 + 1;
-		a[0] = 'a' - 1 + n;
-		n = rand() % 8 + 1;
-		a[1] = '1' - 1 + n;
-		a[2] = a[0];
-		if(player_color == 1){
-            a[3] = a[1] - 1;
-		}
-            else a[3]=a[1] + 1;
-		a[5] = '\0';
-		pieceLocation x = transformare(a);
 
-		if (b[x.start].type == 'p' && b[x.start].color == player_color){
-			if (b[x.fin].type == '0'){
-				if (updateBoard(x) == 0){
-					char str[10] = "move ";
-					strcat(str, a);
-					cout << str << endl;
-					ok = 1;
-				}
-			}
-			else{
-				return 3;
-			}
-		}
-	}
-	return 0;
-}
 int ChessBoard::flipBoard(){
+    int x = 98;
     for (int i = 21; i < 59; i++){
         Elemente aux;
+        if (i == kingPosition){
+            kingPosition = x;
+        }
         aux = b[i];
-        b[i] = b[99 - i + 20];
-        b[99 - i + 20] = aux;
+        b[i] = b[x];
+        b[x] = aux;
+        x--;
     }
 return 0;
 }

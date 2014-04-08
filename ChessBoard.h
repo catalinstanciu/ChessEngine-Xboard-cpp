@@ -9,7 +9,8 @@
 using namespace std;
 
 typedef struct {
-	int start; int fin;
+	int start;
+	int fin;
 } pieceLocation;
 
 typedef struct{
@@ -18,22 +19,19 @@ typedef struct{
 	int color;
 } Elemente;
 
-class ChessBoard
-{
+class ChessBoard {
 public:
-    int kingPosition;
+
 	ChessBoard();
 	virtual ~ChessBoard();
-
+    int kingPosition;
 	Elemente b[120];
 	int noGame;
     char* locationToString(pieceLocation x);
 	int newBoard();
 	int resetBoard();
-	int generateBoardMatrix();
 	pieceLocation transformare(char * aux);
 	int updateBoard(pieceLocation x);
-	int mutareRandom(int player_color);
 	int flipBoard();
 
 protected:
